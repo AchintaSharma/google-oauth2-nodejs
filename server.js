@@ -1,19 +1,17 @@
 const express = require('express');
-const passport = require('passport');
 const cookieSession = require('cookie-session');
-require('./passport');
+const passport = require('passport');
+const serverConfig = require('./configs/server.config');
+require('./middlewares/passport');
 
 const app = express();
 
 app.use(cookieSession({
   name: 'google-auth-session',
   keys: ['key1', 'key2']
-}))
-
+}));
 app.use(passport.initialize());
 app.use(passport.session());
-
-const port = process.env.PORT || 5000
 
 app.get("/", (req, res) => {
     res.json({message: "You are not logged in"})
@@ -43,4 +41,6 @@ app.get('/google/callback',
     }
 );
 
-app.listen(port, () => console.log("server running on port" + port))
+app.listen(serverConfig.PORT, () => {
+    console.log(`Server running on port ${serverConfig.PORT} `)
+});

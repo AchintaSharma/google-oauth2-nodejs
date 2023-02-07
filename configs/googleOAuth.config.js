@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   clientID : process.env.GOOGLE_OAUTH_CLIENT_ID,
   clientSecret : process.env.GOOGLE_OAUTH_CLIENT_SECRET,
