@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Homepage</title>
+  <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome!</h1>
+    <p id="user-info"></p>
+  </div>
+  <script>
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    if (userInfo) {
+      document.querySelector('#user-info').innerHTML = `
+        Name: ${userInfo.name}<br>
+        Email: ${userInfo.email}<br>
+        Picture: <img src="${userInfo.picture}" alt="User Picture">
+      `;
+    } else {
+      window.location.replace('http://localhost:3000/login');
+    }
+  </script>
+</body>
+</html>
