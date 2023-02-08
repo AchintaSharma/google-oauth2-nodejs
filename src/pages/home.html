@@ -27,7 +27,8 @@
         Picture: <img src="${userInfo.picture}" alt="User Picture">
       `;
     } else {
-      window.location.replace('http://localhost:3000/login');
+      document.querySelector('#user-info').innerHTML = `Unable to retrieve user info from local storage`
+      // window.location.replace('http://localhost:5000/failed');
     }
   </script>
 </body>
