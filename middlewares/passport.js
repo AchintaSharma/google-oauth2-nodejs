@@ -1,24 +1,9 @@
-// const clientID = process.env.GOOGLE_OAUTH_CLIENT_ID;
-// const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
-// const callbackUrl = process.env.GOOGLE_OAUTH_REDIRECT_URI;
-
-const oauthConfig = require("../configs/googleOAuth.config");
 const passport = require("passport");
+const mongoose = require('mongoose');
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
-passport.serializeUser(function (user, done) {
-  done(null, user.email);
-});
-
-// passport.deserializeUser(function (email, done) {
-//   done(null, user);
-// });
-
-passport.deserializeUser((id, done) => {
-  User.findOne(id).then((user) => {
-    done(null, user);
-  });
-});
+const oauthConfig = require("../configs/googleOAuth.config");
+const User = require('../models/user.model');
 
 passport.use(
   new GoogleStrategy(
@@ -26,27 +11,44 @@ passport.use(
       clientID: oauthConfig.clientID,
       clientSecret: oauthConfig.clientSecret,
       callbackURL: oauthConfig.redirectUri,
-      passReqToCallback: true,
+      // passReqToCallback: true,
     },
-    (accessToken, refreshToken, profile, done) => {
-      console.log("access token, ", accessToken);
-      console.log("refresh token, ", refreshToken);
+    (request, accessToken, refreshToken, profile, done) => {
+      return done(null, profile);
+
+      // console.log("access token, ", accessToken);
+      // console.log("refresh token, ", refreshToken);
 
       console.log("profile:", profile);
-      User.findOne({ email: profile.email }).then((existingUser) => {
-        if (existingUser) {
-          // we already have a record with the given profile ID
-          done(null, existingUser);
-        } else {
-          // we don't have a user record with this ID, make a new record!
-          new User({
-            email: profile.email,
-            name: profile.name,
-          })
-            .save()
-            .then((user) => done(null, user));
-        }
-      });
+      // User.findOne({ googleId: profile.id }).then((existingUser) => {
+      //   if (existingUser) {
+      //     // we already have a record with the given profile ID
+      //     done(null, existingUser);
+      //   } else {
+      //     // we don't have a user record with this ID, make a new record!
+      //     new User({
+      //      googleId: profile.id,
+      //     })
+      //       .save()
+      //       .then((user) => done(null, user));
+      //   }
+      // });
     }
   )
 );
+
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+  // User.findById(id)
+  // .then((user) => {
+  //   console.log("User:", user);
+  //   done(null, user);
+  // })
+  // .catch(err => {
+  //   console.error(err);
+  // });
+});
